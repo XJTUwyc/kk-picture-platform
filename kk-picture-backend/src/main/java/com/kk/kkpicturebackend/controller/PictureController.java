@@ -20,11 +20,9 @@ import com.kk.kkpicturebackend.model.vo.PictureVO;
 import com.kk.kkpicturebackend.model.vo.PictureTagCategory;
 import com.kk.kkpicturebackend.service.PictureService;
 import com.kk.kkpicturebackend.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -33,6 +31,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@Slf4j
+@RestController
+@RequestMapping("/picture")
 public class PictureController {
 
     @Resource
