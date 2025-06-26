@@ -43,6 +43,8 @@ public class PictureController {
     /**
      * 上传图片
      */
+    @PostMapping("/upload")
+//    @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<PictureVO> uploadPicture(
             @RequestPart("file") MultipartFile multipartFile,
             PictureUploadRequest pictureUploadRequest,
@@ -52,6 +54,17 @@ public class PictureController {
         return ResultUtils.success(pictureVO);
     }
 
+    /**
+     * 通过url上传图片
+     */
+    public BaseResponse<PictureVO> uploadPictureByUrl(
+            @RequestBody PictureUploadRequest pictureUploadRequest,
+            HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        String fileUrl = pictureUploadRequest.getFileUrl();
+        PictureVO pictureVO = pictureService.uploadPicture(fileUrl, pictureUploadRequest, loginUser);
+        return ResultUtils.success(pictureVO);
+    }
     /**
      * 删除图片
      */
@@ -181,6 +194,8 @@ public class PictureController {
         // 数据校验
         pictureService.validPicture(picture);
         User loginUser = userService.getLoginUser(request);
+        // 补充审核参数
+        pictureService.fillReviewParams(picture, loginUser);
         // 判断图片是否存在
         long id = pictureEditRequest.getId();
         Picture oldPicture = pictureService.getById(id);
@@ -189,7 +204,6 @@ public class PictureController {
         if (!oldPicture.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
-        pictureService.fillReviewParams(picture, loginUser);
         // 操作数据库
         boolean result = pictureService.updateById(picture);
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
@@ -219,5 +233,16 @@ public class PictureController {
         User loginUser = userService.getLoginUser(request);
         pictureService.doPictureReview(pictureReviewRequest, loginUser);
         return ResultUtils.success(true);
+    }
+
+    /**
+     * 批量抓取并创建图片
+     */
+    public BaseResponse<Integer> uploadPictureByBatch(@RequestBody PictureUploadByBatchRequest pictureUploadByBatchRequest,
+                                                      HttpServletRequest request) {
+        ThrowUtils.throwIf(pictureUploadByBatchRequest == null, ErrorCode.PARAMS_ERROR);
+        User loginUser = userService.getLoginUser(request);
+        int uploadCount = pictureService.uploadPictureByBatch(pictureUploadByBatchRequest, loginUser);
+        return ResultUtils.success(uploadCount);
     }
 }

@@ -1,4 +1,4 @@
-// @ts-ignoreAdd commentMore actions
+// @ts-ignore
 /* eslint-disable */
 import request from '@/request'
 

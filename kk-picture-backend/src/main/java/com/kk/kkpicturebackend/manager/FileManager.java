@@ -21,8 +21,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * 文件服务
+ * @deprecated 改为使用 upload 包的模板方法优化
+ */
 @Service
 @Slf4j
+@Deprecated
 public class FileManager {
 
     @Resource
@@ -74,6 +79,8 @@ public class FileManager {
             this.deleteTempFile(file);
         }
     }
+
+
 
     /**
      * 校验文件
