@@ -27,14 +27,8 @@ public class CosManager {
      * @param file  文件
      * @return
      */
-    public PutObjectResult putPictureObject(String key, File file) {
+    public PutObjectResult putObject(String key, File file) {
         PutObjectRequest putObjectRequest = new PutObjectRequest(cosClientConfig.getBucket(), key, file);
-        // 对图片进行处理(获取基本信息也被视为一种处理)
-        PicOperations picOperations = new PicOperations();
-        // 1 表示返回原图信息
-        picOperations.setIsPicInfo(1);
-        // 构造处理函数
-        putObjectRequest.setPicOperations(picOperations);
         return cosClient.putObject(putObjectRequest);
     }
 
@@ -46,5 +40,16 @@ public class CosManager {
     public COSObject getObject(String key) {
         GetObjectRequest getObjectRequest = new GetObjectRequest(cosClientConfig.getBucket(), key);
         return cosClient.getObject(getObjectRequest);
+    }
+
+    public PutObjectResult putPictureObject(String key, File file) {
+        PutObjectRequest putObjectRequest = new PutObjectRequest(cosClientConfig.getBucket(), key, file);
+        // 对图片进行处理（获取基本信息也被视作图片的处理）
+        PicOperations picOperations = new PicOperations();
+        // 1 表示返回原图信息
+        picOperations.setIsPicInfo(1);
+        // 构造处理参数
+        putObjectRequest.setPicOperations(picOperations);
+        return cosClient.putObject(putObjectRequest);
     }
 }
